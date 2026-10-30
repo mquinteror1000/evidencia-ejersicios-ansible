@@ -7,5 +7,3 @@
 ## Parte 2 Ansible
 
 [parte-2-ansible](parte-2-ansible.md)
-
-
