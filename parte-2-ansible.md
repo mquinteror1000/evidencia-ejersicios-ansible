@@ -271,7 +271,6 @@ zona=aves
 ---
 zona=aves
 [root@localhost ansible]# 
-
 ```
 
 Efectivamente, un script de shell no es idempotente, a diferencia de un modulo se ansible que si lo es.
@@ -605,7 +604,6 @@ nodo1 | SUCCESS => {
     }
 }
 [root@localhost ansible]# 
-
 ```
 
 #### 6. La documentación vive en la terminal
@@ -714,5 +712,3 @@ OPTIONS (= is mandatory):
 ```
 
 Bastante información
-
-

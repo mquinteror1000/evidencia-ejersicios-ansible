@@ -97,7 +97,6 @@ nodo1                      : ok=4    changed=0    unreachable=0    failed=0    s
 uid=8003(panda) gid=8004(panda) grupos=8004(panda),8002(cuidadores)
 drwxrws---. 2 root cuidadores 6 oct 23 09:40 /opt/zoologico
 [root@localhost ansible]# 
-
 ```
 
 ha funcionado y se ha podido ejecutar dos veces con confianza, ya que es idempotente
@@ -152,7 +151,6 @@ web.yml
       ansible.builtin.service:
         name: httpd
         state: restarted
-
 ```
 
 index.html.j2
@@ -167,7 +165,6 @@ index.html.j2
     <p>Desplegado por Ansible</p>
   </body>
 </html>
-
 ```
 
 Pasamos a la ejecución del playbook
@@ -206,7 +203,6 @@ PLAY RECAP *********************************************************************
 nodo1                      : ok=3    changed=2    unreachable=0    failed=1    skipped=0    rescued=0    ignored=0   
 
 [root@localhost ansible]# 
-
 ```
 
 Salen colores rojos, pero nada que temer. está comprobando lo que debeŕia hacer la simulación de la ejecucion del playbook
@@ -239,7 +235,6 @@ PLAY RECAP *********************************************************************
 nodo1                      : ok=5    changed=4    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
 
 [root@localhost ansible]# 
-
 ```
 
 curl si nos responde con el html
@@ -314,7 +309,6 @@ PLAY RECAP *********************************************************************
 nodo1                      : ok=5    changed=2    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
 
 [root@localhost ansible]# 
-
 ```
 
 efectivamente lo modifico
@@ -331,7 +325,6 @@ efectivamente lo modifico
   </body>
 </html>
 [root@localhost ansible]# 
-
 ```
 
 ahora dice zoologico turno vespertino y no desplegado por ansile
@@ -392,7 +385,6 @@ web-salud.yml
       ansible.builtin.service:
         name: httpd
         state: restarted
-
 ```
 
 Ejecutamos este nuevo playbook
@@ -424,7 +416,6 @@ PLAY RECAP *********************************************************************
 nodo1                      : ok=6    changed=3    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
 
 [root@localhost ansible]# 
-
 ```
 
 Y probamos: curl responde [OK]
@@ -443,5 +434,3 @@ nodo1                      : ok=5    changed=0    unreachable=0    failed=0    s
 
 [root@localhost ansible]# 
 ```
-
-
