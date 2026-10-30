@@ -33,7 +33,6 @@ nodo1 ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDXpIeOV8BBTdwHuwDAyPBr1ZoXWXI1tqyL2S
 nodo1 ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBB1NnJN3pImt6mydrtDvK2LKmzCcYOBFPjhlP+CTYxD3Wrlx2I+K6KDR5jTnYNR9Y7o+N+Dgh6moUQ1KNXeqTPQ=
 127.0.0.1 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGkauMvuOfkbKsDgkL7brzpEb0qCzHs/547r2IyWIx11
 192.168.122.40 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGkauMvuOfkbKsDgkL7brzpEb0qCzHs/547r2IyWIx11
-
 ```
 
 #### 3. Generar claves ssh para el nodo de control ( con usuario root
@@ -88,7 +87,6 @@ jue 29 oct 2026 18:37:07 CST
 jue 29 oct 2026 18:37:07 CST
 jue 29 oct 2026 18:37:07 CST
 [root@localhost ~]# 
-
 ```
 
 Han funcionado, como entra por ssh directo autenticando con la clave.
@@ -209,7 +207,6 @@ deleting p1.html
 
 sent 124 bytes  received 33 bytes  314.00 bytes/sec
 total size is 24  speedup is 0.15 (DRY RUN)
-
 ```
 
 #### 3. sftp modo interactivo
@@ -232,7 +229,6 @@ sftp> put /etc/hostname
 Uploading /etc/hostname to /home/ansible/hostname
 hostname                                                                                                                                                                          100%    1     0.9KB/s   00:00    
 sftp> bye 
-
 ```
 
 #### 4. Motivación para ansible
@@ -268,5 +264,3 @@ zona=aves
 ```
 
 efectivamente, tres veces hizo lo mismo
-
-
