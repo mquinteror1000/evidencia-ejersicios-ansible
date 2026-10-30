@@ -1,6 +1,6 @@
 ## Evidencia de ejercicios ANSIBLE
 
-## Paso a paso en la VM
+## 01 - Paso a paso en la VM
 
 #### 1. Crear el usuario ansible y darle nombre al host
 
@@ -126,5 +126,147 @@ Last login: Thu Oct 29 18:34:47 2026 from 127.0.0.1
 ```
 
 ha funcionado, como lo hcemos todo como root, podemos usmear los home de otros usuarios, pero lo correcto sería que ansible sea quien corrija sus permisos
+
+## 02 - copiar archivos de un punto a otro
+
+#### 1. scp: origen -> destino
+
+local a remoto
+
+```shellsession
+[root@localhost ~]# echo "Reporte de aves - $(date)" > /root/reporte.txt
+[root@localhost ~]# scp /root/reporte.txt ansible@nodo1:/home/ansible/
+reporte.txt    
+```
+
+remoto a local
+
+```shellsession
+[root@localhost ~]# scp ansible@nodo1:/etc/os-release /tmp/os-release-nodo1
+os-release        
+```
+
+carpeta completa
+
+```shellsession
+[root@localhost ~]# scp ansible@nodo1:/etc/os-release /tmp/os-release-nodo1
+os-release                                                                                                                                                                        100%  579     1.0MB/s   00:00    
+[root@localhost ~]# mkdir -p /root/sitio && for i in 1 2 3; do echo "pagina $i" > /root/sitio/p$i.html; done
+[root@localhost ~]# scp -r /root/sitio ansible@nodo1:~
+p2.html                                                                                                                                                                           100%    9    23.2KB/s   00:00    
+p3.html                                                                                                                                                                           100%    9    39.2KB/s   00:00    
+p4.html                                                                                                                                                                           100%    6    33.0KB/s   00:00    
+p1.html                                                                                                                                                                           100%    9    45.4KB/s   00:00    
+[root@localhost ~]# ssh ansible@nodo1 'ls -l ~/sitio ~/reporte.txt'
+-rw-r--r--. 1 ansible ansible 47 oct 29 19:07 /home/ansible/reporte.txt
+
+/home/ansible/sitio:
+total 16
+-rw-r--r--. 1 ansible ansible 9 oct 29 19:09 p1.html
+-rw-r--r--. 1 ansible ansible 9 oct 29 19:09 p2.html
+-rw-r--r--. 1 ansible ansible 9 oct 29 19:09 p3.html
+-rw-r--r--. 1 ansible ansible 6 oct 29 19:09 p4.html
+```
+
+#### 2. rsync solo lo que cambió
+
+```shellsession
+[root@localhost ~]# dnf install -y rsync
+Última comprobación de caducidad de metadatos hecha hace 0:37:55, el jue 29 oct 2026 18:33:51.
+El paquete rsync-3.2.7-1.el9_8.x86_64 ya está instalado.
+Dependencias resueltas.
+Nada por hacer.
+¡Listo!
+[root@localhost ~]#  rsync -avz /root/sitio/ ansible@nodo1:/home/ansible/respaldo/
+sending incremental file list
+created directory /home/ansible/respaldo
+./
+p1.html
+p2.html
+p3.html
+p4.html
+
+sent 349 bytes  received 140 bytes  326.00 bytes/sec
+total size is 33  speedup is 0.07
+[root@localhost ~]# rsync -avz /root/sitio/ ansible@nodo1:/home/ansible/respaldo/ 
+sending incremental file list
+
+sent 139 bytes  received 12 bytes  100.67 bytes/sec
+total size is 33  speedup is 0.22
+[root@localhost ~]# echo "nueva" > /root/sitio/p4.html
+[root@localhost ~]# rsync -avz /root/sitio/ ansible@nodo1:/home/ansible/respaldo/
+sending incremental file list
+p4.html
+
+sent 180 bytes  received 41 bytes  147.33 bytes/sec
+total size is 33  speedup is 0.15
+[root@localhost ~]# rm /root/sitio/p1.html
+rm: ¿borrar el fichero regular '/root/sitio/p1.html'? (s/n) s
+[root@localhost ~]# rsync -avz --delete --dry-run /root/sitio/ ansible@nodo1:/home/ansible/respaldo/
+sending incremental file list
+deleting p1.html
+./
+
+sent 124 bytes  received 33 bytes  314.00 bytes/sec
+total size is 24  speedup is 0.15 (DRY RUN)
+
+```
+
+#### 3. sftp modo interactivo
+
+```shellsession
+[root@localhost ~]# sftp ansible@nodo1
+Connected to nodo1.
+sftp> wd ; ls
+Invalid command.
+sftp> pwd
+Remote working directory: /home/ansible
+sftp> ld
+Invalid command.
+sftp> ls
+reporte.txt  respaldo     sitio        
+sftp> get reporte.txt /tmp/reporte-bajado.txt
+Fetching /home/ansible/reporte.txt to /tmp/reporte-bajado.txt
+open local "/tmp/reporte-bajado.txt": Permission denied
+sftp> put /etc/hostname
+Uploading /etc/hostname to /home/ansible/hostname
+hostname                                                                                                                                                                          100%    1     0.9KB/s   00:00    
+sftp> bye 
+
+```
+
+#### 4. Motivación para ansible
+
+¿Por qué ansible es mejor que un script interactivo?
+
+```shellsession
+[root@localhost ~]# vim configura.sh
+```
+
+con este contendido
+
+```bash
+#!/bin/bash
+for h in nodo1; do
+  ssh ansible@$h 'echo "zona=aves" >> ~/config.txt'
+done
+```
+
+se ejecuta 3 veces
+
+```shellsession
+[root@localhost ~]# sh configura.sh 
+[root@localhost ~]# sh configura.sh 
+[root@localhost ~]# sh configura.sh 
+[root@localhost ~]# ls
+anaconda-ks.cfg  configura.sh  devops2026  evidencia-examen.sh  evidencia-martin-quintero.txt  reporte.txt  script-evidencia.sh  sitio
+[root@localhost ~]# cat /home/ansible/config.txt 
+zona=aves
+zona=aves
+zona=aves
+[root@localhost ~]# 
+```
+
+efectivamente, tres veces hizo lo mismo
 
 
